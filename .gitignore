@@ -1,5 +1,9 @@
 # Laravel
 src/.env
+src/.cache/
+src/.config/
+src/.local/
+src/.npm/
 src/.env.backup
 src/vendor/
 src/node_modules/
