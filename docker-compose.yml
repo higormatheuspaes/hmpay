@@ -14,7 +14,7 @@ services:
     environment:
       - PHP_OPCACHE_VALIDATE_TIMESTAMPS=1
     depends_on:
-      postgres:
+      mariadb:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -36,24 +36,42 @@ services:
     networks:
       - hmpay
 
-  # ─── PostgreSQL ───────────────────────────────────────────────────────────
-  postgres:
-    image: postgres:16-alpine
-    container_name: hmpay_postgres
+  # ─── MariaDB ──────────────────────────────────────────────────────────────
+  mariadb:
+    image: mariadb:11-jammy
+    container_name: hmpay_mariadb
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${DB_DATABASE:-hmpay}
-      POSTGRES_USER: ${DB_USERNAME:-hmpay}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mariadb_data:/var/lib/mysql
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PORT:-3306}:3306"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-hmpay} -d ${DB_DATABASE:-hmpay}"]
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 5s
       timeout: 5s
       retries: 10
+    networks:
+      - hmpay
+
+  # ─── phpMyAdmin ───────────────────────────────────────────────────────────
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: hmpay_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      PMA_USER: ${DB_USERNAME}
+      PMA_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "8080:80"
+    depends_on:
+      - mariadb
     networks:
       - hmpay
 
@@ -62,13 +80,13 @@ services:
     image: redis:7-alpine
     container_name: hmpay_redis
     restart: unless-stopped
-    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD:-secret}"
+    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
     volumes:
       - redis_data:/data
     ports:
       - "${REDIS_PORT:-6379}:6379"
     healthcheck:
-      test: ["CMD", "redis-cli", "--pass", "${REDIS_PASSWORD:-secret}", "ping"]
+      test: ["CMD", "redis-cli", "--pass", "${REDIS_PASSWORD}", "ping"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -88,7 +106,7 @@ services:
       - ./src:/var/www
       - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
     depends_on:
-      postgres:
+      mariadb:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -108,7 +126,7 @@ services:
       - ./src:/var/www
       - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
     depends_on:
-      postgres:
+      mariadb:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -131,7 +149,7 @@ networks:
     driver: bridge
 
 volumes:
-  postgres_data:
+  mariadb_data:
     driver: local
   redis_data:
     driver: local
