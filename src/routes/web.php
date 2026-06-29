@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ClienteController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -12,7 +11,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('cobrancas', 'cobrancas/index')->name('cobrancas.index');
     Volt::route('cobrancas/create', 'cobrancas/create')->name('cobrancas.create');
     Volt::route('cobrancas/{cobranca}', 'cobrancas/show')->name('cobrancas.show');
-    Route::view('parcelas', 'livewire.parcelas.index')->name('parcelas.index');
+    Volt::route('parcelas', 'parcelas/index')->name('parcelas.index');
 });
 
 Route::view('profile', 'profile')
