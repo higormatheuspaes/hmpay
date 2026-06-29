@@ -100,9 +100,9 @@ class DevSeeder extends Seeder
             'periodicidade'   => 'mensal',
         ]);
         $this->criarParcelas($c2, [
-            ['numero' => 1, 'valor' => 300.00, 'vencimento' => now()->subMonths(3)->startOfMonth(), 'status' => 'pago', 'data_pagamento' => now()->subMonths(3)->startOfMonth()],
-            ['numero' => 2, 'valor' => 300.00, 'vencimento' => now()->subMonths(2)->startOfMonth(), 'status' => 'pago', 'data_pagamento' => now()->subMonths(2)->startOfMonth()],
-            ['numero' => 3, 'valor' => 300.00, 'vencimento' => now()->subMonth()->startOfMonth(),   'status' => 'pago', 'data_pagamento' => now()->subMonth()->startOfMonth()],
+            ['numero' => 1, 'valor' => 300.00, 'vencimento' => now()->subMonths(2)->startOfMonth(), 'status' => 'pago', 'data_pagamento' => now()->subMonths(2)->startOfMonth()],
+            ['numero' => 2, 'valor' => 300.00, 'vencimento' => now()->subMonth()->startOfMonth(),   'status' => 'pago', 'data_pagamento' => now()->subMonth()->startOfMonth()],
+            ['numero' => 3, 'valor' => 300.00, 'vencimento' => now()->startOfMonth(),               'status' => 'pago', 'data_pagamento' => now()->startOfMonth()->addDays(2)],
         ]);
 
         // 3. Avaliação física — Roberto — avulsa — atrasada
@@ -131,14 +131,14 @@ class DevSeeder extends Seeder
         ]);
         $parcelas4 = [];
         for ($i = 1; $i <= 12; $i++) {
-            $venc   = now()->subMonths(4)->addMonths($i - 1)->startOfMonth();
-            $pago   = $i <= 4;
+            $venc = now()->subMonths(4)->addMonths($i - 1)->startOfMonth();
+            $pago = $i <= 5;
             $parcelas4[] = [
                 'numero'         => $i,
                 'valor'          => 100.00,
                 'vencimento'     => $venc,
                 'status'         => $pago ? 'pago' : 'pendente',
-                'data_pagamento' => $pago ? $venc : null,
+                'data_pagamento' => $pago ? ($i === 5 ? now()->startOfMonth()->addDays(5) : $venc) : null,
             ];
         }
         $this->criarParcelas($c4, $parcelas4);
