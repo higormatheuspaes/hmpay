@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class IntegracaoGateway extends Model
 {
+    protected $table = 'integracoes_gateway';
+
     protected $fillable = [
         'empresa_id',
         'gateway',

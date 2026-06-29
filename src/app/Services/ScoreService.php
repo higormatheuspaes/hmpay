@@ -8,14 +8,20 @@ use App\Models\ScoreHistorico;
 
 class ScoreService
 {
-    private const PONTOS_EM_DIA   =  5;
-    private const PONTOS_ATRASADO = -5;
-    private const PONTOS_VENCIDA  = -10;
+    private const PONTOS_EM_DIA          =   5;
+    private const PONTOS_ATRASO_CURTO    = -10; // 1–7 dias de atraso
+    private const PONTOS_ATRASO_LONGO    = -25; // 8+ dias de atraso ou inadimplência
 
     public function aplicarPagamento(Parcela $parcela): void
     {
-        $emDia  = $parcela->data_pagamento->lte($parcela->vencimento);
-        $pontos = $emDia ? self::PONTOS_EM_DIA : self::PONTOS_ATRASADO;
+        $emDia = $parcela->data_pagamento->lte($parcela->vencimento);
+
+        if ($emDia) {
+            $pontos = self::PONTOS_EM_DIA;
+        } else {
+            $diasAtraso = (int) $parcela->vencimento->startOfDay()->diffInDays($parcela->data_pagamento->startOfDay());
+            $pontos = $diasAtraso <= 7 ? self::PONTOS_ATRASO_CURTO : self::PONTOS_ATRASO_LONGO;
+        }
 
         $this->aplicar($parcela, $pontos);
     }
@@ -23,14 +29,14 @@ class ScoreService
     public function aplicarAtraso(Parcela $parcela): void
     {
         $jaAplicado = ScoreHistorico::where('parcela_id', $parcela->id)
-            ->where('pontos_aplicados', self::PONTOS_VENCIDA)
+            ->where('pontos_aplicados', self::PONTOS_ATRASO_LONGO)
             ->exists();
 
         if ($jaAplicado) {
             return;
         }
 
-        $this->aplicar($parcela, self::PONTOS_VENCIDA);
+        $this->aplicar($parcela, self::PONTOS_ATRASO_LONGO);
     }
 
     private function aplicar(Parcela $parcela, int $pontos): void
@@ -41,8 +47,8 @@ class ScoreService
         $categoria = $this->calcularCategoria($novoScore);
 
         $cliente->update([
-            'score_atual'      => $novoScore,
-            'score_categoria'  => $categoria,
+            'score_atual'     => $novoScore,
+            'score_categoria' => $categoria,
         ]);
 
         ScoreHistorico::create([

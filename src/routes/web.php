@@ -14,6 +14,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('cobrancas/{cobranca}', 'cobrancas/show')->name('cobrancas.show');
     Volt::route('parcelas', 'parcelas/index')->name('parcelas.index');
     Volt::route('relatorios', 'relatorios/index')->name('relatorios.index');
+    Volt::route('configuracoes', 'configuracoes/index')->name('configuracoes.index');
+    Volt::route('clientes/{cliente}', 'clientes/show')->name('clientes.show');
 
     Route::get('relatorios/inadimplencia/csv',          [RelatorioController::class, 'inadimplenciaCsv'])->name('relatorios.inadimplencia.csv');
     Route::get('relatorios/inadimplencia/pdf',          [RelatorioController::class, 'inadimplenciaPdf'])->name('relatorios.inadimplencia.pdf');

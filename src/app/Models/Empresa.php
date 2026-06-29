@@ -14,14 +14,20 @@ class Empresa extends Model
         'cnpj_cpf',
         'email',
         'telefone',
+        'logo_path',
         'plano_id',
         'status_assinatura',
+        'notificacoes_ativas',
+        'dias_antes_vencimento',
+        'frequencia_aviso_atraso',
     ];
 
     protected function casts(): array
     {
         return [
-            'status_assinatura' => 'string',
+            'status_assinatura'     => 'string',
+            'notificacoes_ativas'   => 'boolean',
+            'dias_antes_vencimento' => 'integer',
         ];
     }
 
