@@ -12,7 +12,7 @@ new class extends Component
     }
 }; ?>
 
-<aside class="w-64 bg-white border-r border-gray-200 flex flex-col flex-shrink-0">
+<aside class="w-64 h-full bg-white border-r border-gray-200 flex flex-col flex-shrink-0">
 
     {{-- Logo --}}
     <div class="h-16 flex items-center px-6 border-b border-gray-200">
