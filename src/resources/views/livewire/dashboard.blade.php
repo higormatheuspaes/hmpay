@@ -398,7 +398,7 @@ new #[Layout('layouts.app')] class extends Component
                                 legend: {
                                     position: 'bottom',
                                     labels: {
-                                        color: dark ? '#cbd5e1' : '#374151',
+                                        color: dark ? '#f1f5f9' : '#374151',
                                         padding: 16,
                                         font: { size: 12 },
                                         usePointStyle: true,
