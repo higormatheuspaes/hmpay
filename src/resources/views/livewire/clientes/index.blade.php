@@ -143,8 +143,11 @@ new #[Layout('layouts.app')] class extends Component
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     @forelse($clientes as $cliente)
-                        <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-4 py-3.5 font-medium text-gray-900">{{ $cliente->nome }}</td>
+                        <tr class="hover:bg-gray-50 transition-colors cursor-pointer"
+                            x-data @click="Livewire.navigate('{{ route('clientes.show', $cliente) }}')">
+                            <td class="px-4 py-3.5 font-medium text-gray-900 text-indigo-600">
+                                {{ $cliente->nome }}
+                            </td>
                             <td class="px-4 py-3.5 text-gray-600">{{ $cliente->telefone }}</td>
                             <td class="px-4 py-3.5 text-gray-500 hidden md:table-cell">{{ $cliente->cpf_cnpj ?? '—' }}</td>
                             <td class="px-4 py-3.5">
@@ -166,7 +169,7 @@ new #[Layout('layouts.app')] class extends Component
                                     {{ $badgeLabel }} · {{ $cliente->score_atual }}
                                 </span>
                             </td>
-                            <td class="px-4 py-3.5">
+                            <td class="px-4 py-3.5" @click.stop>
                                 <div class="flex items-center justify-end gap-1">
                                     <button wire:click="editar({{ $cliente->id }})"
                                         class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors" title="Editar">
