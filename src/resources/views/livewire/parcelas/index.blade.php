@@ -22,7 +22,7 @@ new #[Layout('layouts.app')] class extends Component
 
         $query = Parcela::with(['cobranca.cliente'])
             ->whereHas('cobranca', fn($q) => $q->where('empresa_id', $empresaId))
-            ->when($this->status === 'atrasada', fn($q) => $q->where(fn($q) => $q->where('status', 'atrasado')->orWhere(fn($q) => $q->where('status', 'pendente')->whereDate('vencimento', '<', now()))))
+            ->when($this->status === 'atrasada', fn($q) => $q->where(fn($q) => $q->where('status', 'atrasado')->orWhere(fn($q) => $q->where('status', 'pendente')->whereDate('vencimento', '<', today()))))
             ->when($this->status && $this->status !== 'atrasada', fn($q) => $q->where('status', $this->status))
             ->when($this->clienteId, fn($q) => $q->whereHas('cobranca', fn($q) =>
                 $q->where('cliente_id', $this->clienteId)
@@ -83,55 +83,52 @@ new #[Layout('layouts.app')] class extends Component
     }
 }; ?>
 
-<div>
-    {{-- Cabeçalho --}}
-    <div class="mb-6">
+<x-data-table :paginator="$parcelas">
+    <x-slot:header>
         <h1 class="text-xl font-semibold text-gray-900">Parcelas</h1>
         <p class="text-sm text-gray-500 mt-0.5">Todas as parcelas das suas cobranças</p>
-    </div>
+    </x-slot:header>
 
-    {{-- Filtros --}}
-    <div class="flex flex-col sm:flex-row gap-2 mb-4">
-        <select wire:model.live="clienteId"
-            class="border border-gray-300 rounded-lg text-sm px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
-            <option value="">Todos os clientes</option>
-            @foreach($clientes as $cliente)
-                <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
-            @endforeach
-        </select>
+    <x-slot:filters>
+        <div class="flex flex-col sm:flex-row gap-2">
+            <select wire:model.live="clienteId"
+                class="border border-gray-300 rounded-lg text-sm px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
+                <option value="">Todos os clientes</option>
+                @foreach($clientes as $cliente)
+                    <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
+                @endforeach
+            </select>
 
-        <select wire:model.live="status"
-            class="border border-gray-300 rounded-lg text-sm px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
-            <option value="">Todos os status</option>
-            <option value="pendente">Pendente</option>
-            <option value="atrasada">Atrasada</option>
-            <option value="pago">Pago</option>
-            <option value="cancelado">Cancelado</option>
-        </select>
+            <select wire:model.live="status"
+                class="border border-gray-300 rounded-lg text-sm px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
+                <option value="">Todos os status</option>
+                <option value="pendente">Pendente</option>
+                <option value="atrasada">Atrasada</option>
+                <option value="pago">Pago</option>
+                <option value="cancelado">Cancelado</option>
+            </select>
 
-        <select wire:model.live="periodo"
-            class="border border-gray-300 rounded-lg text-sm px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
-            <option value="">Qualquer vencimento</option>
-            <option value="hoje">Vence hoje</option>
-            <option value="semana">Esta semana</option>
-            <option value="mes">Este mês</option>
-        </select>
-    </div>
+            <select wire:model.live="periodo"
+                class="border border-gray-300 rounded-lg text-sm px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
+                <option value="">Qualquer vencimento</option>
+                <option value="hoje">Vence hoje</option>
+                <option value="semana">Esta semana</option>
+                <option value="mes">Este mês</option>
+            </select>
+        </div>
+    </x-slot:filters>
 
-    {{-- Tabela --}}
-    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm min-w-[700px]">
+    <table class="w-full table-fixed text-sm">
                 <thead class="bg-gray-50 border-b border-gray-200">
                     <tr>
-                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Cliente</th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[22%]">Cliente</th>
                         <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Cobrança</th>
-                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-12">#</th>
-                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Vencimento</th>
-                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Valor</th>
-                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Status</th>
-                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Pago em</th>
-                        <th class="px-4 py-3 w-12"></th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[42px]">#</th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[96px]">Vencimento</th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[88px]">Valor</th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[90px]">Status</th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[88px]">Pago em</th>
+                        <th class="px-4 py-3 w-[56px]"></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -152,10 +149,10 @@ new #[Layout('layouts.app')] class extends Component
                             };
                         @endphp
                         <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-4 py-3 font-medium text-gray-900">
+                            <td class="px-4 py-3 font-medium text-gray-900 truncate">
                                 {{ $parcela->cobranca->cliente->nome }}
                             </td>
-                            <td class="px-4 py-3 text-gray-600 max-w-[180px] truncate">
+                            <td class="px-4 py-3 text-gray-600 truncate">
                                 <a href="{{ route('cobrancas.show', $parcela->cobranca_id) }}" wire:navigate
                                     class="hover:text-indigo-600 transition-colors">
                                     {{ $parcela->cobranca->descricao }}
@@ -215,14 +212,7 @@ new #[Layout('layouts.app')] class extends Component
             </table>
         </div>
 
-        @if($parcelas->hasPages())
-            <div class="px-4 py-3 border-t border-gray-100">
-                {{ $parcelas->links() }}
-            </div>
-        @endif
-    </div>
-
-    {{-- Modal código do boleto --}}
+    <x-slot:modal>
     @if($showModal)
         <div class="fixed inset-0 z-50 flex items-center justify-center">
             <div class="absolute inset-0 bg-black/50" wire:click="$set('showModal', false)"></div>
@@ -248,4 +238,5 @@ new #[Layout('layouts.app')] class extends Component
             </div>
         </div>
     @endif
-</div>
+    </x-slot:modal>
+</x-data-table>

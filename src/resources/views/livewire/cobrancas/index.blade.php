@@ -93,59 +93,58 @@ new #[Layout('layouts.app')] class extends Component
     }
 }; ?>
 
-<div>
-    {{-- Cabeçalho --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <div>
-            <h1 class="text-xl font-semibold text-gray-900">Cobranças</h1>
-            <p class="text-sm text-gray-500 mt-0.5">Gerencie as cobranças da sua empresa</p>
+<x-data-table :paginator="$cobrancas">
+    <x-slot:header>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h1 class="text-xl font-semibold text-gray-900">Cobranças</h1>
+                <p class="text-sm text-gray-500 mt-0.5">Gerencie as cobranças da sua empresa</p>
+            </div>
+            <a href="{{ route('cobrancas.create') }}" wire:navigate
+                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm w-full sm:w-auto">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Nova Cobrança
+            </a>
         </div>
-        <a href="{{ route('cobrancas.create') }}" wire:navigate
-            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors shadow-sm w-full sm:w-auto">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-            Nova Cobrança
-        </a>
-    </div>
+    </x-slot:header>
 
-    {{-- Filtros --}}
-    <div class="flex flex-col sm:flex-row gap-2 mb-4">
-        <div class="flex-1 relative">
-            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input wire:model.live.debounce.300ms="busca" type="text" placeholder="Buscar por cliente..."
-                class="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white" />
+    <x-slot:filters>
+        <div class="flex flex-col sm:flex-row gap-2">
+            <div class="flex-1 relative">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input wire:model.live.debounce.300ms="busca" type="text" placeholder="Buscar por cliente..."
+                    class="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white" />
+            </div>
+            <select wire:model.live="tipo"
+                class="border border-gray-300 rounded-lg text-sm px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
+                <option value="">Todos os tipos</option>
+                <option value="avulsa">Avulsa</option>
+                <option value="recorrente">Recorrente</option>
+            </select>
         </div>
-        <select wire:model.live="tipo"
-            class="border border-gray-300 rounded-lg text-sm px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
-            <option value="">Todos os tipos</option>
-            <option value="avulsa">Avulsa</option>
-            <option value="recorrente">Recorrente</option>
-        </select>
-    </div>
+    </x-slot:filters>
 
-    {{-- Tabela --}}
-    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm min-w-[640px]">
+    <table class="w-full table-fixed text-sm">
                 <thead class="bg-gray-50 border-b border-gray-200">
                     <tr>
-                        <th class="text-left px-4 py-3 font-medium text-gray-500 uppercase tracking-wide text-xs">Cliente</th>
+                        <th class="text-left px-4 py-3 font-medium text-gray-500 uppercase tracking-wide text-xs w-[28%]">Cliente</th>
                         <th class="text-left px-4 py-3 font-medium text-gray-500 uppercase tracking-wide text-xs">Descrição</th>
-                        <th class="text-left px-4 py-3 font-medium text-gray-500 uppercase tracking-wide text-xs">Tipo</th>
-                        <th class="text-left px-4 py-3 font-medium text-gray-500 uppercase tracking-wide text-xs">Valor</th>
-                        <th class="text-left px-4 py-3 font-medium text-gray-500 uppercase tracking-wide text-xs">Parcelas</th>
-                        <th class="px-4 py-3 w-16"></th>
+                        <th class="text-left px-4 py-3 font-medium text-gray-500 uppercase tracking-wide text-xs w-[90px]">Tipo</th>
+                        <th class="text-left px-4 py-3 font-medium text-gray-500 uppercase tracking-wide text-xs w-[110px]">Valor</th>
+                        <th class="text-left px-4 py-3 font-medium text-gray-500 uppercase tracking-wide text-xs w-[90px]">Parcelas</th>
+                        <th class="px-4 py-3 w-[48px]"></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     @forelse($cobrancas as $cobranca)
                         <tr class="hover:bg-gray-50 transition-colors cursor-pointer" wire:navigate
                             onclick="window.location='{{ route('cobrancas.show', $cobranca) }}'">
-                            <td class="px-4 py-3.5 font-medium text-gray-900">{{ $cobranca->cliente->nome }}</td>
-                            <td class="px-4 py-3.5 text-gray-600 max-w-[200px] truncate">{{ $cobranca->descricao }}</td>
+                            <td class="px-4 py-3.5 font-medium text-gray-900 truncate">{{ $cobranca->cliente->nome }}</td>
+                            <td class="px-4 py-3.5 text-gray-600 truncate">{{ $cobranca->descricao }}</td>
                             <td class="px-4 py-3.5">
                                 @if($cobranca->tipo === 'avulsa')
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Avulsa</span>
@@ -193,14 +192,7 @@ new #[Layout('layouts.app')] class extends Component
             </table>
         </div>
 
-        @if($cobrancas->hasPages())
-            <div class="px-4 py-3 border-t border-gray-100">
-                {{ $cobrancas->links() }}
-            </div>
-        @endif
-    </div>
-
-    {{-- Modal nova cobrança --}}
+    <x-slot:modal>
     @if($showModal)
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div class="absolute inset-0 bg-black/50" wire:click="$set('showModal', false)"></div>
@@ -277,4 +269,5 @@ new #[Layout('layouts.app')] class extends Component
             </div>
         </div>
     @endif
-</div>
+    </x-slot:modal>
+</x-data-table>

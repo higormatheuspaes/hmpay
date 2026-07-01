@@ -62,12 +62,12 @@ new #[Layout('layouts.app')] class extends Component
 
         $totalAtrasadas = Parcela::whereHas('cobranca', fn($q) => $q->where('empresa_id', $empresaId))
             ->where(fn($q) => $q->where('status', 'atrasado')
-                ->orWhere(fn($q) => $q->where('status', 'pendente')->whereDate('vencimento', '<', now())))
+                ->orWhere(fn($q) => $q->where('status', 'pendente')->whereDate('vencimento', '<', today())))
             ->count();
 
         $valorAtrasado = Parcela::whereHas('cobranca', fn($q) => $q->where('empresa_id', $empresaId))
             ->where(fn($q) => $q->where('status', 'atrasado')
-                ->orWhere(fn($q) => $q->where('status', 'pendente')->whereDate('vencimento', '<', now())))
+                ->orWhere(fn($q) => $q->where('status', 'pendente')->whereDate('vencimento', '<', today())))
             ->sum('valor');
 
         $recebidoMes = Parcela::whereHas('cobranca', fn($q) => $q->where('empresa_id', $empresaId))
@@ -82,15 +82,15 @@ new #[Layout('layouts.app')] class extends Component
             ->whereDate('vencimento', '>=', now())
             ->whereDate('vencimento', '<=', now()->addDays(30))
             ->orderBy('vencimento')
-            ->limit(8)
+            ->limit(20)
             ->get();
 
         $ultimasAtrasadas = Parcela::with(['cobranca.cliente'])
             ->whereHas('cobranca', fn($q) => $q->where('empresa_id', $empresaId))
             ->where(fn($q) => $q->where('status', 'atrasado')
-                ->orWhere(fn($q) => $q->where('status', 'pendente')->whereDate('vencimento', '<', now())))
+                ->orWhere(fn($q) => $q->where('status', 'pendente')->whereDate('vencimento', '<', today())))
             ->orderBy('vencimento')
-            ->limit(8)
+            ->limit(20)
             ->get();
 
         // Recebimentos — período customizado ou janela em meses
@@ -146,7 +146,7 @@ new #[Layout('layouts.app')] class extends Component
     }
 }; ?>
 
-<div class="space-y-6">
+<div class="space-y-4">
 
     {{-- Saudação --}}
     <div>
@@ -188,13 +188,13 @@ new #[Layout('layouts.app')] class extends Component
     </div>
 
     {{-- Tabelas lado a lado --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
         {{-- Atrasadas --}}
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
                 <h2 class="text-sm font-semibold text-gray-700">Parcelas atrasadas</h2>
-                @if($totalAtrasadas > 8)
+                @if($ultimasAtrasadas->isNotEmpty())
                     <a href="{{ route('parcelas.index') }}" wire:navigate class="text-xs text-indigo-600 hover:text-indigo-700">Ver todas</a>
                 @endif
             </div>
@@ -207,7 +207,7 @@ new #[Layout('layouts.app')] class extends Component
                     <p class="text-sm text-gray-400">Nenhuma parcela atrasada</p>
                 </div>
             @else
-                <ul class="divide-y divide-gray-100">
+                <ul class="divide-y divide-gray-100 overflow-y-auto" style="max-height: 280px;">
                     @foreach($ultimasAtrasadas as $parcela)
                         <li class="px-5 py-3 flex items-center justify-between hover:bg-red-50 transition-colors">
                             <div class="min-w-0">
@@ -228,7 +228,7 @@ new #[Layout('layouts.app')] class extends Component
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
                 <h2 class="text-sm font-semibold text-gray-700">Próximas a vencer <span class="text-gray-400 font-normal">(30 dias)</span></h2>
-                @if($proximasVencer->count() === 8)
+                @if($proximasVencer->isNotEmpty())
                     <a href="{{ route('parcelas.index') }}" wire:navigate class="text-xs text-indigo-600 hover:text-indigo-700">Ver todas</a>
                 @endif
             </div>
@@ -238,7 +238,7 @@ new #[Layout('layouts.app')] class extends Component
                     <p class="text-sm text-gray-400">Nenhuma parcela nos próximos 30 dias</p>
                 </div>
             @else
-                <ul class="divide-y divide-gray-100">
+                <ul class="divide-y divide-gray-100 overflow-y-auto" style="max-height: 280px;">
                     @foreach($proximasVencer as $parcela)
                         @php $diasRestantes = (int) now()->startOfDay()->diffInDays($parcela->vencimento->startOfDay(), false); @endphp
                         <li class="px-5 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors">
@@ -266,10 +266,10 @@ new #[Layout('layouts.app')] class extends Component
     </div>
 
     {{-- Gráficos --}}
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
         {{-- Recebimentos por mês (2/3) --}}
-        <div class="lg:col-span-2 bg-white rounded-xl border border-gray-200 p-5"
+        <div class="lg:col-span-2 bg-white rounded-xl border border-gray-200 p-5 min-w-0"
             x-data="{
                 chart: null,
                 periodoAtivo: {{ $periodoMeses }},
@@ -296,6 +296,7 @@ new #[Layout('layouts.app')] class extends Component
                         options: {
                             responsive: true,
                             maintainAspectRatio: true,
+                            aspectRatio: 3.5,
                             plugins: {
                                 legend: { display: false },
                                 tooltip: {
@@ -341,7 +342,7 @@ new #[Layout('layouts.app')] class extends Component
             }">
 
             {{-- Cabeçalho com filtros --}}
-            <div class="flex flex-wrap items-start justify-between gap-4 mb-5">
+            <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
                 <h2 class="text-sm font-semibold text-gray-700 mt-1">Recebimentos</h2>
 
                 <div class="flex flex-wrap items-center gap-3">
@@ -371,11 +372,11 @@ new #[Layout('layouts.app')] class extends Component
                 </div>
             </div>
 
-            <canvas x-ref="barChart" height="100"></canvas>
+            <canvas x-ref="barChart"></canvas>
         </div>
 
         {{-- Score dos clientes (1/3) --}}
-        <div class="bg-white rounded-xl border border-gray-200 p-5"
+        <div class="bg-white rounded-xl border border-gray-200 p-5 min-w-0"
             x-data="{
                 init() {
                     const dark = document.documentElement.classList.contains('dark');
@@ -393,6 +394,8 @@ new #[Layout('layouts.app')] class extends Component
                         },
                         options: {
                             responsive: true,
+                            maintainAspectRatio: true,
+                            aspectRatio: 1.5,
                             cutout: '70%',
                             plugins: {
                                 legend: {

@@ -9,7 +9,7 @@
 @php
     $totalPago    = $parcelas->where('status', 'pago')->sum('valor');
     $totalAberto  = $parcelas->where('status', 'pendente')->sum('valor');
-    $totalAtrasado = $parcelas->filter(fn($p) => $p->status === 'pendente' && $p->vencimento->isPast())->sum('valor');
+    $totalAtrasado = $parcelas->filter(fn($p) => $p->status === 'pendente' && $p->vencimento->lt(today()))->sum('valor');
 @endphp
 
 <div class="summary">
@@ -43,7 +43,7 @@
     <tbody>
         @forelse($parcelas as $p)
         @php
-            $atrasada = $p->status === 'pendente' && $p->vencimento->isPast();
+            $atrasada = $p->status === 'pendente' && $p->vencimento->lt(today());
             $badgeClass = match(true) {
                 $p->status === 'pago'      => 'badge-green',
                 $p->status === 'cancelado' => 'badge-gray',

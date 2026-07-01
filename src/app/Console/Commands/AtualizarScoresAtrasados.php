@@ -15,7 +15,7 @@ class AtualizarScoresAtrasados extends Command
     {
         $parcelas = Parcela::with(['cobranca.cliente'])
             ->where('status', 'pendente')
-            ->whereDate('vencimento', '<', now())
+            ->whereDate('vencimento', '<', today())
             ->get();
 
         $total = 0;

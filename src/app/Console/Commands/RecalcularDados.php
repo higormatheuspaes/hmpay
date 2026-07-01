@@ -32,8 +32,8 @@ class RecalcularDados extends Command
         $hoje = now()->startOfDay();
 
         // pendente com vencimento passado → atrasado
-        $atrasados = Parcela::where('status', 'pendente')->whereDate('vencimento', '<', $hoje)->count();
-        Parcela::where('status', 'pendente')->whereDate('vencimento', '<', $hoje)->update(['status' => 'atrasado']);
+        $atrasados = Parcela::where('status', 'pendente')->whereDate('vencimento', '<', today())->count();
+        Parcela::where('status', 'pendente')->whereDate('vencimento', '<', today())->update(['status' => 'atrasado']);
         $this->line("  pendente vencido → atrasado: {$atrasados} parcelas");
 
         $this->line("  pago/pendente: já nos valores corretos do enum");

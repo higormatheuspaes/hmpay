@@ -44,4 +44,9 @@ class Parcela extends Model
     {
         return $this->hasMany(ScoreHistorico::class);
     }
+
+    public function logMensagens(): HasMany
+    {
+        return $this->hasMany(LogMensagem::class);
+    }
 }

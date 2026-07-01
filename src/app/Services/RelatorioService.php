@@ -20,7 +20,7 @@ class RelatorioService
             ->whereHas('cobranca', fn($q) => $q->where('empresa_id', $this->empresaId()))
             ->where(fn($q) => $q
                 ->where('status', 'atrasado')
-                ->orWhere(fn($q) => $q->where('status', 'pendente')->whereDate('vencimento', '<', now()))
+                ->orWhere(fn($q) => $q->where('status', 'pendente')->whereDate('vencimento', '<', today()))
             )
             ->orderBy('vencimento')
             ->get();

@@ -14,6 +14,7 @@ new #[Layout('layouts.app')] class extends Component
     public ?int    $editandoParcelaId  = null;
     public string  $editValor          = '';
     public string  $editVencimento     = '';
+    public string  $editCodigoBoleto   = '';
 
     public function mount(Cobranca $cobranca): void
     {
@@ -46,6 +47,7 @@ new #[Layout('layouts.app')] class extends Component
         $this->editandoParcelaId = $parcelaId;
         $this->editValor         = $parcela->valor;
         $this->editVencimento    = $parcela->vencimento;
+        $this->editCodigoBoleto  = $parcela->codigo_boleto ?? '';
     }
 
     public function salvarEdicao(): void
@@ -53,12 +55,14 @@ new #[Layout('layouts.app')] class extends Component
         $this->validate([
             'editValor'      => ['required', 'numeric', 'min:0.01'],
             'editVencimento' => ['required', 'date'],
+            'editCodigoBoleto' => ['nullable', 'string', 'max:255'],
         ]);
 
         $this->cobranca->parcelas()->findOrFail($this->editandoParcelaId)->update([
-            'valor'      => $this->editValor,
-            'vencimento' => $this->editVencimento,
-            'origem'     => 'manual',
+            'valor'          => $this->editValor,
+            'vencimento'     => $this->editVencimento,
+            'codigo_boleto'  => $this->editCodigoBoleto ?: null,
+            'origem'         => 'manual',
         ]);
 
         $this->editandoParcelaId = null;
@@ -163,11 +167,18 @@ new #[Layout('layouts.app')] class extends Component
                             <td class="px-4 py-3">
                                 @if($editandoParcelaId === $parcela->id)
                                     <input wire:model="editValor" type="number" step="0.01" min="0.01"
-                                        class="border border-gray-200 rounded-lg px-2 py-1 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-28" />
+                                        class="border border-gray-200 rounded-lg px-2 py-1 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-28 mb-1" />
+                                    <input wire:model="editCodigoBoleto" type="text" placeholder="Código do boleto (opcional)"
+                                        class="block border border-gray-200 rounded-lg px-2 py-1 text-xs font-mono focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-full" />
                                 @else
                                     <span class="text-gray-700">R$ {{ number_format($parcela->valor, 2, ',', '.') }}</span>
                                     @if($parcela->origem === 'manual')
                                         <span class="ml-1 text-xs text-orange-500">editado</span>
+                                    @endif
+                                    @if($parcela->codigo_boleto)
+                                        <p class="text-xs text-gray-400 font-mono mt-0.5 truncate max-w-[180px]" title="{{ $parcela->codigo_boleto }}">
+                                            {{ $parcela->codigo_boleto }}
+                                        </p>
                                     @endif
                                 @endif
                             </td>
