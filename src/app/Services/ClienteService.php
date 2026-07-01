@@ -9,12 +9,17 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ClienteService
 {
+    private function normalizarTelefone(string $telefone): string
+    {
+        return preg_replace('/\D/', '', $telefone);
+    }
+
 	public function criar(array $dados): Cliente
 	{
 		return Cliente::create([
 			'empresa_id'		=>Auth::user()->empresa_id,
 			'nome'				=>$dados['nome'],
-			'telefone'			=>$dados['telefone'],
+			'telefone'			=>$this->normalizarTelefone($dados['telefone']),
 			'cpf_cnpj'			=>$dados['cpf_cnpj'] ?? null,
 			'email'				=>$dados['email'] ?? null,
 			'score_atual'		=>100,
@@ -26,7 +31,7 @@ class ClienteService
 	{
 		$cliente->update([
 			'nome'				=>$dados['nome'],
-			'telefone'			=>$dados['telefone'],
+			'telefone'			=>$this->normalizarTelefone($dados['telefone']),
 			'cpf_cnpj'			=>$dados['cpf_cnpj'],
 			'email'				=>$dados['email'],
 		]);

@@ -18,8 +18,10 @@ class RelatorioService
     {
         return Parcela::with(['cobranca.cliente'])
             ->whereHas('cobranca', fn($q) => $q->where('empresa_id', $this->empresaId()))
-            ->where('status', 'pendente')
-            ->whereDate('vencimento', '<', now())
+            ->where(fn($q) => $q
+                ->where('status', 'atrasado')
+                ->orWhere(fn($q) => $q->where('status', 'pendente')->whereDate('vencimento', '<', now()))
+            )
             ->orderBy('vencimento')
             ->get();
     }

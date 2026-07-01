@@ -227,9 +227,24 @@ new #[Layout('layouts.app')] class extends Component
                         <x-input-error :messages="$errors->get('nome')" class="mt-1" />
                     </div>
 
-                    <div>
+                    <div x-data="{
+                        mascara(v) {
+                            v = v.replace(/\D/g, '').slice(0, 11);
+                            if (v.length <= 10)
+                                return v.replace(/^(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+                            return v.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+                        }
+                    }">
                         <x-input-label for="telefone" value="Telefone *" />
-                        <x-text-input wire:model="telefone" id="telefone" class="block mt-1 w-full" type="text" required />
+                        <x-text-input
+                            wire:model="telefone"
+                            id="telefone"
+                            class="block mt-1 w-full"
+                            type="text"
+                            placeholder="(47) 99999-9999"
+                            inputmode="numeric"
+                            x-on:input="$el.value = mascara($el.value); $wire.set('telefone', $el.value)"
+                            required />
                         <x-input-error :messages="$errors->get('telefone')" class="mt-1" />
                     </div>
 

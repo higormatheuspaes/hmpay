@@ -22,7 +22,7 @@ new #[Layout('layouts.app')] class extends Component
 
         $query = Parcela::with(['cobranca.cliente'])
             ->whereHas('cobranca', fn($q) => $q->where('empresa_id', $empresaId))
-            ->when($this->status === 'atrasada', fn($q) => $q->where('status', 'pendente')->whereDate('vencimento', '<', now()->toDateString()))
+            ->when($this->status === 'atrasada', fn($q) => $q->where(fn($q) => $q->where('status', 'atrasado')->orWhere(fn($q) => $q->where('status', 'pendente')->whereDate('vencimento', '<', now()))))
             ->when($this->status && $this->status !== 'atrasada', fn($q) => $q->where('status', $this->status))
             ->when($this->clienteId, fn($q) => $q->whereHas('cobranca', fn($q) =>
                 $q->where('cliente_id', $this->clienteId)
@@ -111,7 +111,7 @@ new #[Layout('layouts.app')] class extends Component
                 <tbody class="divide-y divide-gray-100">
                     @forelse($parcelas as $parcela)
                         @php
-                            $vencida = $parcela->status === 'pendente' && $parcela->vencimento->isPast();
+                            $vencida = $parcela->status === 'atrasado' || ($parcela->status === 'pendente' && $parcela->vencimento->lt(today()));
                             $statusClass = match($parcela->status) {
                                 'pago'      => 'bg-green-100 text-green-700',
                                 'atrasado'  => 'bg-red-100 text-red-700',

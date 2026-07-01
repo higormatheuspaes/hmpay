@@ -20,6 +20,11 @@ class Empresa extends Model
         'notificacoes_ativas',
         'dias_antes_vencimento',
         'frequencia_aviso_atraso',
+        'notif_lembrete_antes_ativo',
+        'notif_lembrete_antes_dias',
+        'notif_lembrete_dia_ativo',
+        'notif_aviso_atraso_ativo',
+        'notif_confirmacao_pagamento_ativo',
     ];
 
     protected function casts(): array
