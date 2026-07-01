@@ -81,6 +81,9 @@ class NotificacaoTestSeeder extends Seeder
             'origem'         => 'automatica',
             'status'         => $tipo === 'confirmacao_pagamento' ? 'pago' : 'pendente',
             'data_pagamento' => $tipo === 'confirmacao_pagamento' ? today() : null,
+            'codigo_boleto'  => in_array($tipo, ['lembrete_dia', 'lembrete_antes', 'aviso_atraso'])
+                ? '34191.75556 22838.55832 71777.68000 8 12340000010000'
+                : null,
         ]);
 
         $parcela->load('cobranca.empresa', 'cobranca.cliente');

@@ -56,9 +56,10 @@ new #[Layout('layouts.app')] class extends Component
 
         for ($i = 1; $i <= $n; $i++) {
             $preview[] = [
-                'numero'     => $i,
-                'valor'      => $i === $n ? $ultimoValor : $valorParcela,
-                'vencimento' => $vencimento->format('Y-m-d'),
+                'numero'        => $i,
+                'valor'         => $i === $n ? $ultimoValor : $valorParcela,
+                'vencimento'    => $vencimento->format('Y-m-d'),
+                'codigo_boleto' => '',
             ];
             $vencimento->addMonth();
         }
@@ -200,6 +201,7 @@ new #[Layout('layouts.app')] class extends Component
                                 <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-16">#</th>
                                 <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Vencimento</th>
                                 <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Valor (R$)</th>
+                                <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Código do boleto</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100">
@@ -220,6 +222,11 @@ new #[Layout('layouts.app')] class extends Component
                                             <input wire:model="parcelasPreview.{{ $i }}.valor" type="number" step="0.01" min="0.01"
                                                 class="border border-gray-200 rounded-lg px-2.5 py-1.5 text-sm text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-full" />
                                         </div>
+                                    </td>
+                                    <td class="px-4 py-2.5">
+                                        <input wire:model="parcelasPreview.{{ $i }}.codigo_boleto" type="text"
+                                            placeholder="Opcional"
+                                            class="border border-gray-200 rounded-lg px-2.5 py-1.5 text-sm text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-full min-w-[180px]" />
                                     </td>
                                 </tr>
                             @endforeach

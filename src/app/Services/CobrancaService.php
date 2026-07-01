@@ -49,12 +49,13 @@ class CobrancaService
     {
         foreach ($parcelas as $p) {
             Parcela::create([
-                'cobranca_id' => $cobranca->id,
-                'numero'      => $p['numero'],
-                'valor'       => $p['valor'],
-                'vencimento'  => $p['vencimento'],
-                'origem'      => 'automatica',
-                'status'      => 'pendente',
+                'cobranca_id'   => $cobranca->id,
+                'numero'        => $p['numero'],
+                'valor'         => $p['valor'],
+                'vencimento'    => $p['vencimento'],
+                'codigo_boleto' => $p['codigo_boleto'] ?? null,
+                'origem'        => 'automatica',
+                'status'        => 'pendente',
             ]);
         }
     }

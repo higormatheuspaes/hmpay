@@ -18,6 +18,7 @@ class Parcela extends Model
         'id_externo_gateway',
         'anexo_path',
         'data_pagamento',
+        'codigo_boleto',
     ];
 
     protected function casts(): array

@@ -33,6 +33,7 @@ class MensagemService
             . "Este é um lembrete da *{$empresa->nome}*.\n\n"
             . "Você tem uma parcela de *R$ " . number_format($parcela->valor, 2, ',', '.') . "* "
             . "com vencimento em *" . $parcela->vencimento->format('d/m/Y') . "*.\n\n"
+            . ($parcela->codigo_boleto ? "*Código:* {$parcela->codigo_boleto}\n\n" : '')
             . "Qualquer dúvida, entre em contato conosco.";
 
         $this->enviar($empresa, $cliente, $parcela, 'lembrete_antes', $texto);
@@ -50,7 +51,8 @@ class MensagemService
         $texto = "Olá, {$cliente->nome}! 👋\n\n"
             . "Sua parcela de *R$ " . number_format($parcela->valor, 2, ',', '.') . "* "
             . "com a *{$empresa->nome}* vence *hoje*.\n\n"
-            . "Não esqueça de realizar o pagamento!";
+            . "Não esqueça de realizar o pagamento!"
+            . ($parcela->codigo_boleto ? "\n\n*Código:* {$parcela->codigo_boleto}" : '');
 
         $this->enviar($empresa, $cliente, $parcela, 'lembrete_dia', $texto);
     }
@@ -64,10 +66,11 @@ class MensagemService
             return;
         }
 
-        $diasAtraso = now()->diffInDays($parcela->vencimento);
+        $diasAtraso = (int) $parcela->vencimento->diffInDays(now());
         $texto = "Olá, {$cliente->nome}.\n\n"
             . "Identificamos que sua parcela de *R$ " . number_format($parcela->valor, 2, ',', '.') . "* "
             . "com a *{$empresa->nome}* está em atraso há *{$diasAtraso} dia(s)*.\n\n"
+            . ($parcela->codigo_boleto ? "*Código:* {$parcela->codigo_boleto}\n\n" : '')
             . "Por favor, entre em contato para regularizar sua situação.";
 
         $this->enviar($empresa, $cliente, $parcela, 'aviso_atraso', $texto);

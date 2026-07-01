@@ -42,6 +42,32 @@ new #[Layout('layouts.app')] class extends Component
     public function updatedPeriodo(): void   { $this->resetPage(); }
     public function updatedClienteId(): void { $this->resetPage(); }
 
+    public ?int $editandoId     = null;
+    public string $codigoBoleto = '';
+    public bool $showModal      = false;
+
+    public function editarCodigo(int $parcelaId): void
+    {
+        $parcela = Parcela::whereHas('cobranca', fn($q) =>
+            $q->where('empresa_id', Auth::user()->empresa_id)
+        )->findOrFail($parcelaId);
+
+        $this->editandoId   = $parcelaId;
+        $this->codigoBoleto = $parcela->codigo_boleto ?? '';
+        $this->showModal    = true;
+    }
+
+    public function salvarCodigo(): void
+    {
+        $parcela = Parcela::whereHas('cobranca', fn($q) =>
+            $q->where('empresa_id', Auth::user()->empresa_id)
+        )->findOrFail($this->editandoId);
+
+        $parcela->update(['codigo_boleto' => $this->codigoBoleto ?: null]);
+        $this->showModal = false;
+        $this->reset(['editandoId', 'codigoBoleto']);
+    }
+
     public function marcarPago(int $parcelaId): void
     {
         $parcela = Parcela::whereHas('cobranca', fn($q) =>
@@ -155,15 +181,24 @@ new #[Layout('layouts.app')] class extends Component
                                 {{ $parcela->data_pagamento ? $parcela->data_pagamento->format('d/m/Y') : '—' }}
                             </td>
                             <td class="px-4 py-3">
-                                @if($parcela->status === 'pendente')
-                                    <button wire:click="marcarPago({{ $parcela->id }})"
-                                        wire:confirm="Confirmar pagamento desta parcela?"
-                                        class="p-1.5 rounded-lg text-gray-400 hover:text-green-600 hover:bg-green-50 transition-colors" title="Marcar como pago">
+                                <div class="flex items-center gap-1">
+                                    <button wire:click="editarCodigo({{ $parcela->id }})"
+                                        class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                                        title="{{ $parcela->codigo_boleto ? 'Editar código do boleto' : 'Adicionar código do boleto' }}">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
                                         </svg>
                                     </button>
-                                @endif
+                                    @if($parcela->status === 'pendente' || $parcela->status === 'atrasado')
+                                        <button wire:click="marcarPago({{ $parcela->id }})"
+                                            wire:confirm="Confirmar pagamento desta parcela?"
+                                            class="p-1.5 rounded-lg text-gray-400 hover:text-green-600 hover:bg-green-50 transition-colors" title="Marcar como pago">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </button>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -186,4 +221,31 @@ new #[Layout('layouts.app')] class extends Component
             </div>
         @endif
     </div>
+
+    {{-- Modal código do boleto --}}
+    @if($showModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center">
+            <div class="absolute inset-0 bg-black/50" wire:click="$set('showModal', false)"></div>
+            <div class="relative bg-white rounded-xl shadow-xl w-full max-w-sm mx-4 p-6">
+                <h2 class="text-base font-semibold text-gray-900 mb-4">Código do boleto / referência</h2>
+                <p class="text-sm text-gray-500 mb-4">Será incluído automaticamente nas notificações enviadas ao cliente.</p>
+
+                <input wire:model="codigoBoleto" type="text"
+                    placeholder="Ex: 12345.67890 12345.678901 12345.678901 1 12340000010000"
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    autofocus />
+
+                <div class="flex justify-end gap-3 mt-5">
+                    <button wire:click="$set('showModal', false)"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        Cancelar
+                    </button>
+                    <button wire:click="salvarCodigo"
+                        class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+                        Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
