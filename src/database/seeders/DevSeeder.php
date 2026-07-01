@@ -42,7 +42,7 @@ class DevSeeder extends Seeder
         // Usuário principal
         User::create([
             'name'       => 'Higor Paes',
-            'email'      => 'higor@hmpay.com',
+            'email'      => 'higor@payog.com',
             'password'   => Hash::make('password'),
             'empresa_id' => $empresa->id,
         ]);

@@ -31,7 +31,7 @@ class TestDataSeeder extends Seeder
         $this->seedClientes();
 
         $this->command->info('Recalculando scores...');
-        \Artisan::call('hmpay:recalcular');
+        \Artisan::call('payog:recalcular');
         $this->command->line(\Artisan::output());
     }
 

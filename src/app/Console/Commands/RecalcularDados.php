@@ -10,7 +10,7 @@ use Illuminate\Console\Command;
 
 class RecalcularDados extends Command
 {
-    protected $signature   = 'hmpay:recalcular';
+    protected $signature   = 'payog:recalcular';
     protected $description = 'Normaliza status das parcelas e recalcula scores do zero';
 
     public function handle(): void

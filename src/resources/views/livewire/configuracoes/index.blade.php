@@ -553,7 +553,7 @@ new #[Layout('layouts.app')] class extends Component
                 </div>
 
                 <p class="text-sm text-gray-600 mb-4 flex-1">
-                    O HMPay cuida do envio de todas as notificações. Você não precisa criar conta em nenhum provedor — basta ativar e configurar as preferências na aba <strong>Notificações</strong>.
+                    O Payog cuida do envio de todas as notificações. Você não precisa criar conta em nenhum provedor — basta ativar e configurar as preferências na aba <strong>Notificações</strong>.
                 </p>
 
                 <div class="space-y-2 text-sm text-gray-500 mb-4">

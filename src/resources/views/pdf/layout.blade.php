@@ -29,7 +29,7 @@
 <body>
 <div class="header">
     <div class="header-left">
-        <h1>HMPay</h1>
+        <h1>Payog</h1>
         <p>{{ $empresa?->nome ?? '' }}</p>
     </div>
     <div class="header-right">
