@@ -130,6 +130,17 @@ new #[Layout('layouts.app')] class extends Component
             <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Parcelas</h2>
         </div>
 
+        {{-- Aviso gateway em breve --}}
+        <div class="px-6 py-3 border-b border-gray-100 bg-blue-50/50 flex items-start gap-2">
+            <svg class="w-3.5 h-3.5 text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-xs text-blue-700">
+                <strong class="font-semibold">Em breve:</strong> geração automática de boleto e PIX via gateway.
+                Por enquanto, registre o código do boleto manualmente usando o botão de edição em cada parcela.
+            </p>
+        </div>
+
         <div class="overflow-x-auto">
             <table class="w-full text-sm min-w-[600px]">
                 <thead class="bg-gray-50 border-b border-gray-100">
@@ -171,10 +182,12 @@ new #[Layout('layouts.app')] class extends Component
                                     <input wire:model="editCodigoBoleto" type="text" placeholder="Código do boleto (opcional)"
                                         class="block border border-gray-200 rounded-lg px-2 py-1 text-xs font-mono focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-full" />
                                 @else
-                                    <span class="text-gray-700">R$ {{ number_format($parcela->valor, 2, ',', '.') }}</span>
-                                    @if($parcela->origem === 'manual')
-                                        <span class="ml-1 text-xs text-orange-500">editado</span>
-                                    @endif
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="text-gray-700">R$ {{ number_format($parcela->valor, 2, ',', '.') }}</span>
+                                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium {{ $parcela->origem === 'manual' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500' }}">
+                                            {{ $parcela->origem === 'manual' ? 'manual' : 'auto' }}
+                                        </span>
+                                    </div>
                                     @if($parcela->codigo_boleto)
                                         <p class="text-xs text-gray-400 font-mono mt-0.5 truncate max-w-[180px]" title="{{ $parcela->codigo_boleto }}">
                                             {{ $parcela->codigo_boleto }}

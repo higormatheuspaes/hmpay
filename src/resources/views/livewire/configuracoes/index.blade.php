@@ -616,8 +616,8 @@ new #[Layout('layouts.app')] class extends Component
             {{-- Gateway Asaas --}}
             <div class="bg-white rounded-xl border border-gray-200 p-6 flex flex-col">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
-                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-9 h-9 rounded-lg bg-indigo-50 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                         </svg>
                     </div>
@@ -625,30 +625,50 @@ new #[Layout('layouts.app')] class extends Component
                         <h2 class="text-base font-semibold text-gray-900">Gateway de Pagamento (Asaas)</h2>
                         <p class="text-xs text-gray-500">Boleto e PIX automáticos para seus clientes</p>
                     </div>
-                    @if($asaas_api_key)
-                        <span class="ml-auto text-xs font-medium px-2 py-1 bg-green-100 text-green-700 rounded-full">Conectado</span>
-                    @else
-                        <span class="ml-auto text-xs font-medium px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full">Não configurado</span>
-                    @endif
+                    <span class="ml-auto text-xs font-medium px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full">Em breve</span>
                 </div>
 
-                <p class="text-sm text-gray-600 mb-4 flex-1">
-                    Conecte sua conta do Asaas para gerar boletos e cobranças via PIX automaticamente. Sua chave é armazenada de forma criptografada.
+                {{-- Aviso em breve --}}
+                <div class="flex items-start gap-3 px-4 py-3.5 mb-4 bg-indigo-50 border border-indigo-100 rounded-xl">
+                    <svg class="w-4 h-4 text-indigo-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                        <p class="text-xs font-semibold text-indigo-800 mb-0.5">Em desenvolvimento</p>
+                        <p class="text-xs text-indigo-700 leading-relaxed">
+                            A integração com o Asaas está sendo finalizada. Em breve seus clientes poderão pagar cobranças via boleto ou PIX diretamente pelo link enviado no WhatsApp.
+                        </p>
+                    </div>
+                </div>
+
+                <p class="text-sm text-gray-500 mb-4 flex-1">
+                    Quando disponível, basta conectar sua conta Asaas aqui e a geração de boletos/PIX passa a ser automática a cada nova cobrança.
                 </p>
 
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Chave de API do Asaas</label>
-                    <input wire:model="asaas_api_key" type="password"
-                        placeholder="{{ $asaas_api_key ? '••••••••••••••••' : 'Cole sua chave aqui' }}"
-                        class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                    @error('asaas_api_key') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-                    <p class="text-xs text-gray-400 mt-1">Encontre sua chave em Minha conta → Integrações no painel do Asaas.</p>
+                <div class="space-y-2 text-sm text-gray-400 mb-4">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-indigo-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Geração automática de boleto bancário
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-indigo-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Cobrança via PIX com código QR
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-indigo-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Link de pagamento enviado automaticamente via WhatsApp
+                    </div>
                 </div>
 
-                <button wire:click="salvarAsaas" wire:loading.attr="disabled"
-                    class="w-full px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50">
-                    <span wire:loading.remove wire:target="salvarAsaas">Salvar chave</span>
-                    <span wire:loading wire:target="salvarAsaas">Salvando...</span>
+                <button disabled
+                    class="w-full px-4 py-2 bg-gray-100 text-gray-400 text-sm font-medium rounded-lg cursor-not-allowed">
+                    Disponível em breve
                 </button>
             </div>
 

@@ -118,15 +118,16 @@ new #[Layout('layouts.app')] class extends Component
         </div>
     </x-slot:filters>
 
-    <table class="w-full table-fixed text-sm min-w-[460px]">
+    <table class="w-full table-fixed text-sm min-w-[540px]">
                 <thead class="bg-gray-50 border-b border-gray-200">
                     <tr>
                         <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Cliente</th>
                         <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide hidden sm:table-cell">Cobrança</th>
                         <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[42px] hidden sm:table-cell">#</th>
                         <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[96px]">Vencimento</th>
-                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[88px]">Valor</th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[108px]">Valor</th>
                         <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[90px]">Status</th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[78px]">Origem</th>
                         <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[88px] hidden sm:table-cell">Pago em</th>
                         <th class="px-4 py-3 w-[56px]"></th>
                     </tr>
@@ -166,12 +167,17 @@ new #[Layout('layouts.app')] class extends Component
                             <td class="px-4 py-3 {{ $vencida ? 'text-red-600 font-medium' : 'text-gray-700' }}">
                                 {{ $parcela->vencimento->format('d/m/Y') }}
                             </td>
-                            <td class="px-4 py-3 text-gray-700 font-medium">
+                            <td class="px-4 py-3 text-gray-700 font-medium whitespace-nowrap">
                                 R$ {{ number_format($parcela->valor, 2, ',', '.') }}
                             </td>
                             <td class="px-4 py-3">
                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $statusClass }}">
                                     {{ $statusLabel }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium {{ $parcela->origem === 'manual' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500' }}">
+                                    {{ $parcela->origem === 'manual' ? 'Manual' : 'Auto' }}
                                 </span>
                             </td>
                             <td class="px-4 py-3 text-gray-500 text-sm hidden sm:table-cell">
@@ -200,7 +206,7 @@ new #[Layout('layouts.app')] class extends Component
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-4 py-16 text-center">
+                            <td colspan="9" class="px-4 py-16 text-center">
                                 <svg class="w-10 h-10 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                 </svg>

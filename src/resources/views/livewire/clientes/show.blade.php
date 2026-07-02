@@ -163,6 +163,9 @@ new #[Layout('layouts.app')] class extends Component
                                     <div class="w-2 h-2 rounded-full flex-shrink-0 mt-1.5 {{ $statusInfo['dot'] }}"></div>
                                     <div class="flex-1 min-w-0">
                                         <span class="text-sm text-gray-700">Parcela {{ $parcela->numero }}/{{ $totalParcCobranca }}</span>
+                                        @if($parcela->origem === 'manual')
+                                            <span class="ml-1.5 inline-flex items-center px-1 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-600">manual</span>
+                                        @endif
                                         <span class="text-xs text-gray-400 ml-2">
                                             vence {{ $parcela->vencimento->format('d/m/Y') }}
                                             @if($parcela->data_pagamento)
