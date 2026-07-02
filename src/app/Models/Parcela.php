@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 
 class Parcela extends Model
 {
@@ -28,6 +29,21 @@ class Parcela extends Model
             'vencimento' => 'date',
             'data_pagamento' => 'date',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::updating(function (Parcela $parcela) {
+            if ($parcela->isDirty('status')) {
+                HistoricoStatusParcela::create([
+                    'parcela_id'      => $parcela->id,
+                    'status_anterior' => $parcela->getOriginal('status'),
+                    'status_novo'     => $parcela->status,
+                    'origem_mudanca'  => 'manual_usuario',
+                    'usuario_id'      => Auth::id(),
+                ]);
+            }
+        });
     }
 
     public function cobranca(): BelongsTo

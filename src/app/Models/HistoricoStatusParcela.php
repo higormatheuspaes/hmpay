@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class HistoricoStatusParcela extends Model
 {
+    protected $table = 'historico_status_parcela';
+
     protected $fillable = [
         'parcela_id',
         'status_anterior',

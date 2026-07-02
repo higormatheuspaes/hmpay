@@ -180,10 +180,10 @@ new #[Layout('layouts.app')] class extends Component
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-1">
                                     <button wire:click="editarCodigo({{ $parcela->id }})"
-                                        class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                                        class="p-1.5 rounded-lg transition-colors {{ $parcela->codigo_boleto ? 'text-indigo-500 hover:text-indigo-700 hover:bg-indigo-50' : 'text-gray-400 hover:text-indigo-600 hover:bg-indigo-50' }}"
                                         title="{{ $parcela->codigo_boleto ? 'Editar código do boleto' : 'Adicionar código do boleto' }}">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                                            <path stroke-linecap="square" stroke-width="1.5" d="M4 5v14M7 5v14M9 5v14M12 5v14M14 5v14M17 5v14M20 5v14" />
                                         </svg>
                                     </button>
                                     @if($parcela->status === 'pendente' || $parcela->status === 'atrasado')
@@ -210,7 +210,6 @@ new #[Layout('layouts.app')] class extends Component
                     @endforelse
                 </tbody>
             </table>
-        </div>
 
     <x-slot:modal>
     @if($showModal)

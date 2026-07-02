@@ -145,7 +145,5 @@ new #[Layout('layouts.app')] class extends Component
                     @endforelse
                 </tbody>
             </table>
-        </div>
-
 
 </x-data-table>

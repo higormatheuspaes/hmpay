@@ -226,7 +226,7 @@ new #[Layout('layouts.app')] class extends Component
                                             </svg>
                                         </button>
                                     </div>
-                                @elseif($parcela->status === 'pendente')
+                                @elseif($parcela->status === 'pendente' || $parcela->status === 'atrasado')
                                     <div class="flex items-center gap-1">
                                         <button wire:click="marcarPago({{ $parcela->id }})"
                                             wire:confirm="Confirmar pagamento desta parcela?"
