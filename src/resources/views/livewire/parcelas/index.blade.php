@@ -92,7 +92,7 @@ new #[Layout('layouts.app')] class extends Component
     <x-slot:filters>
         <div class="flex flex-col sm:flex-row gap-2">
             <select wire:model.live="clienteId"
-                class="border border-gray-300 rounded-lg text-sm px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
+                class="border border-gray-300 rounded-lg text-sm pl-3 pr-8 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
                 <option value="">Todos os clientes</option>
                 @foreach($clientes as $cliente)
                     <option value="{{ $cliente->id }}">{{ $cliente->nome }}</option>
@@ -100,7 +100,7 @@ new #[Layout('layouts.app')] class extends Component
             </select>
 
             <select wire:model.live="status"
-                class="border border-gray-300 rounded-lg text-sm px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
+                class="border border-gray-300 rounded-lg text-sm pl-3 pr-8 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
                 <option value="">Todos os status</option>
                 <option value="pendente">Pendente</option>
                 <option value="atrasada">Atrasada</option>
@@ -109,7 +109,7 @@ new #[Layout('layouts.app')] class extends Component
             </select>
 
             <select wire:model.live="periodo"
-                class="border border-gray-300 rounded-lg text-sm px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
+                class="border border-gray-300 rounded-lg text-sm pl-3 pr-8 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
                 <option value="">Qualquer vencimento</option>
                 <option value="hoje">Vence hoje</option>
                 <option value="semana">Esta semana</option>

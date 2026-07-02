@@ -120,7 +120,7 @@ new #[Layout('layouts.app')] class extends Component
                     class="w-full pl-9 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white" />
             </div>
             <select wire:model.live="tipo"
-                class="border border-gray-300 rounded-lg text-sm px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
+                class="border border-gray-300 rounded-lg text-sm pl-3 pr-8 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
                 <option value="">Todos os tipos</option>
                 <option value="avulsa">Avulsa</option>
                 <option value="recorrente">Recorrente</option>

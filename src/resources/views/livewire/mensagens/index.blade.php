@@ -45,7 +45,7 @@ new #[Layout('layouts.app')] class extends Component
     <x-slot:filters>
         <div class="flex flex-wrap gap-2">
             <select wire:model.live="clienteId"
-                class="border border-gray-300 rounded-lg text-sm px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 bg-white text-gray-700">
+                class="border border-gray-300 rounded-lg text-sm pl-3 pr-8 py-2.5 focus:ring-2 focus:ring-indigo-500 bg-white text-gray-700">
                 <option value="">Todos os clientes</option>
                 @foreach($clientes as $c)
                     <option value="{{ $c->id }}">{{ $c->nome }}</option>
@@ -53,7 +53,7 @@ new #[Layout('layouts.app')] class extends Component
             </select>
 
             <select wire:model.live="tipo"
-                class="border border-gray-300 rounded-lg text-sm px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 bg-white text-gray-700">
+                class="border border-gray-300 rounded-lg text-sm pl-3 pr-8 py-2.5 focus:ring-2 focus:ring-indigo-500 bg-white text-gray-700">
                 <option value="">Todos os tipos</option>
                 <option value="lembrete_antes">Lembrete antes</option>
                 <option value="lembrete_dia">Lembrete no dia</option>
@@ -62,7 +62,7 @@ new #[Layout('layouts.app')] class extends Component
             </select>
 
             <select wire:model.live="status"
-                class="border border-gray-300 rounded-lg text-sm px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 bg-white text-gray-700">
+                class="border border-gray-300 rounded-lg text-sm pl-3 pr-8 py-2.5 focus:ring-2 focus:ring-indigo-500 bg-white text-gray-700">
                 <option value="">Todos os status</option>
                 <option value="enviado">Enviado</option>
                 <option value="erro">Erro</option>
@@ -73,12 +73,12 @@ new #[Layout('layouts.app')] class extends Component
     <table class="w-full table-fixed text-sm">
                 <thead class="bg-gray-50 border-b border-gray-200">
                     <tr>
-                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[110px] hidden md:table-cell">Data</th>
-                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[20%] hidden sm:table-cell">Cliente</th>
-                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[120px] hidden lg:table-cell">Tipo</th>
-                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[120px] hidden lg:table-cell">Telefone</th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[132px] hidden md:table-cell">Data</th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[160px] hidden sm:table-cell">Cliente</th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[130px] hidden lg:table-cell">Tipo</th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[140px] hidden lg:table-cell">Telefone</th>
                         <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Mensagem</th>
-                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[76px]">Status</th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide w-[90px]">Status</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
